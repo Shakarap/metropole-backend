@@ -102,6 +102,7 @@ export class UserInfoRepository extends Repository<UserInfoEntity> {
           return res.send({
             received: true,
             filled: false,
+            data: user
           });
         } else {
           return res.send({

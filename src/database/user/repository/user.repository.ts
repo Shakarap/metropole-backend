@@ -21,7 +21,6 @@ export class UserRepository extends Repository<UserEntity> {
   // ? Update balance
   async updateBalance(req: Request, res: Response) {
     let { useremail, balance } = req.body;
-    console.log(req.body);
 
     let userRepo = getCustomRepository(UserRepository);
     let user = await userRepo.findOne({ useremail: useremail });
@@ -323,6 +322,7 @@ export class UserRepository extends Repository<UserEntity> {
   async decodeUseData(req: Request, res: Response) {
     let tokenData = req.headers.authorization as string;
     let jwt_secret = process.env.JWT_SECRET as string;
+    
 
     jwt.verify(tokenData, jwt_secret, async (error: any, userData: any) => {
       if (error) {
@@ -331,9 +331,16 @@ export class UserRepository extends Repository<UserEntity> {
           data: error,
         });
       } else {
+        
+        let userRepo = getCustomRepository(UserRepository);
+        let user = await userRepo.findOne({ useremail: userData.email });
+
         return res.send({
           received: true,
-          data: userData,
+          data: {
+            ...user,
+            ...userData
+          },
         });
       }
     });
